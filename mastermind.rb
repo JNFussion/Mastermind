@@ -1,7 +1,8 @@
+
 class Mastermind
     attr_reader :code, :hints
 
-    @@colors = ["red", "orange", "yellow", "green", "blue", "violet"]
+    @@colors = ["red", "orange", "yellow", "green", "blue", "violet", "pink", 'cyan', 'brown', 'grey']
     
     def initialize(human_player = true, length = 4, attemps = 12)
         @human_player = human_player
@@ -35,7 +36,6 @@ class Mastermind
     end
     def self.rules
         puts '*' * 55 + "RULES" + '*' * 55
-        puts 'to select'
         puts "You need to guess the color and position of the elements of the code."
         puts "There are #{Mastermind.colors.size} colors: #{Mastermind.colors}"
         puts "The length of the code is #{@length}."
@@ -101,6 +101,7 @@ class Mastermind
                 code << color
             end
             break if correct_input?(code)
+            puts 'Incorrect colors, please try again.'
         end
         code
     end
@@ -140,27 +141,45 @@ def main
     mode = nil
     length = nil
     attemps = nil
-
-    puts '\nUse the index to  select a option.\n'
-
+    Mastermind.rules
+    puts "\nUse the index to  select a option.\n"
+    
+    puts '*' * 115
     puts 'Select the length of the code:'
     puts '1. Code length: 4'
     puts '2. Code length: 6'
     puts '3. Code length: 8'
+    
     loop do
-    puts 'Introduce length: '
-    length = gets.chomp.to_i
-    break if length.include?(/a{1,3}/)
-
+        puts 'Introduce length: '
+        length = gets.chomp
+        break if length.match?(/[1-3]/)
+        puts 'Incorrect number. Please try again'
     end
 
+    length = case length
+        when '1' then 4
+        when '2' then 6
+        when '3' then 8
+        end
+
+    puts '*' * 115
     puts 'Select the number of attempts:'
     puts '1. attemps: 10'
     puts '2. attemps: 12'
+    
     loop do
         puts 'Introduce attemps:'
+        attemps = gets.chomp
+        break if attemps.match?(/[1-2]/)
+        puts 'Incorrect number. Please try again'
+    end
 
-    
+    attemps = case attemps
+        when '1' then 10
+        when '2' then 12
+    end
+    puts '*' * 115
     puts 'Select game mode:'
     puts '1. Player vs Pc. You are the codebreaker.'
     puts '2. Pc vs Player. You are the codemaker.'
@@ -173,8 +192,8 @@ def main
     puts 'Incorrect number, please try again'
     end
     puts '*' * 115
-    game = mode == '1' ? Mastermind.new : Mastermind.new(false)
-    Mastermind.rules
+
+    game = mode == '1' ? Mastermind.new(true, length, attemps) : Mastermind.new(false, length, attemps)
     game.play
 
 end
